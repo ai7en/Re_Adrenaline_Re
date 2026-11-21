@@ -108,6 +108,12 @@ jobs:
           cmake --build build/kernel-stubs
           cmake --install build/kernel-stubs
 
+      - name: Generate SceGxm NIDs for the GXM recon hooks
+        run: |
+          pip install --quiet pyyaml
+          git clone --depth 1 https://github.com/vitasdk/vita-headers /tmp/vita-headers
+          python3 ci/gen_gxm_nids.py /tmp/vita-headers/db user/gxm_nids.h
+
       - name: Build adrenaline_user.suprx
         run: |
           # the sources predate C23 (default of current vita-gcc) and GCC 14, where these warnings became errors
@@ -119,8 +125,6 @@ jobs:
         # Every import must exist in firmware 3.60, or the module fails to load;
         # also lists what is new compared to the prebuilt module
         run: |
-          pip install --quiet pyyaml
-          git clone --depth 1 https://github.com/vitasdk/vita-headers /tmp/vita-headers
           python3 ci/check_vita_imports.py build/user/adrenaline_user.suprx \
             bubble/pkg/sce_module/adrenaline_user.suprx --db /tmp/vita-headers/db
 

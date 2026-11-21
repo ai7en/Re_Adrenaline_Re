@@ -45,6 +45,7 @@ add_resources(cef_res ${res_files})
 add_executable(adrenaline_user
   ${cef_res}
   main.c
+  gxm_recon.c
   pops.c
   titleinfo.c
   flashfs.c

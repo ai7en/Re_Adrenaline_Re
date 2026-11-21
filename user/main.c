@@ -44,6 +44,7 @@
 #include "flashfs.h"
 #include "msfs.h"
 #include "menu.h"
+#include "gxm_recon.h"
 #include "states.h"
 #include "usb.h"
 #include "utils.h"
@@ -550,6 +551,9 @@ int module_start(SceSize args, void *argp) {
   // Get functions
   GetFunctions();
 
+  // Optional GXM diagnostics (only active if ux0:data/adrenaline_gxm_recon.flag exists)
+  GxmReconInit();
+
   // SceCompat
   hooks[n_hooks++] = taiHookFunctionImport(&sceCompatSuspendResumeRef, "ScePspemu", 0x0F35909D, 0x324112CA, sceCompatSuspendResumePatched);
   hooks[n_hooks++] = taiHookFunctionImport(&sceCompatWriteSharedCtrlRef, "ScePspemu", 0x0F35909D, 0x2306FFED, sceCompatWriteSharedCtrlPatched);
@@ -810,6 +814,7 @@ int module_start(SceSize args, void *argp) {
 
 int module_stop(SceSize args, void *argp) {
   int i;
+  GxmReconExit();
   for (i = n_uids - 1; i >= 0; i++) {
     taiInjectRelease(uids[i]);
   }
